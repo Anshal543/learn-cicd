@@ -7,7 +7,7 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
     }
 );
-app.get('/test', (req, res) => {
+app.get('/earth', (req, res) => {
     res.send('Hello, World! to earth');
     }
 );

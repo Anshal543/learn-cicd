@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD to AWS EC2
 
 on:
   push:
@@ -9,7 +9,8 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  build:
+    name: Build Project
     runs-on: ubuntu-latest
 
     steps:
@@ -24,8 +25,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Logs
-        run: echo "test successs by anshal"
+      - name: Echo logs
+        run: echo "Build successful by Anshal 🚀"
 
       - name: Build project
         run: npm run build
+
+  deploy:
+    name: Deploy to AWS EC2
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/learn-cicd
+            git pull origin main
+            npm install
+            npm run build
+            npm run start
